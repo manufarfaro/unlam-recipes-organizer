@@ -5,23 +5,36 @@ import ar.edu.unlam.Model.Receta;
 import ar.edu.unlam.Services.ServicioRecetas;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class OrganizadorRecetaImpl implements OrganizadorReceta {
     ArrayList<Receta> recetas;
-    ArrayList<Ingrediente> ingredientes;
+    ArrayList<Ingrediente> ingredientesDisponibles;
 
     public OrganizadorRecetaImpl(String recetasPath, String ingredientesPath) {
         this.recetas = ServicioRecetas.getRecetasFromFolder(recetasPath);
-        this.ingredientes = ServicioRecetas.getIngredientesFromFile(ingredientesPath);
+        this.ingredientesDisponibles = ServicioRecetas.getIngredientesFromFile(ingredientesPath);
     }
 
     @Override
     public ArrayList<Receta> getRecetasValidas() {
-        return recetas;
+        return recetas
+                .stream()
+                .filter(receta -> this.hayIngredientesSuficientes(receta.getIngredientes(), this.ingredientesDisponibles))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    private boolean hayIngredientesSuficientes(ArrayList<Ingrediente> recetaIngredientes, ArrayList<Ingrediente> ingredientesDisponible) {
-        return true;
+    private boolean hayIngredientesSuficientes(ArrayList<Ingrediente> recetaIngredientes, ArrayList<Ingrediente> ingredientesDisponibles) {
+        for (Ingrediente recetaIngrediente : recetaIngredientes) {
+            for (Ingrediente ingredienteDisponible : ingredientesDisponibles) {
+                if (
+                    recetaIngrediente.getNombre().equals(ingredienteDisponible.getNombre()) &&
+                    recetaIngrediente.getCantidadAsScalar() <= ingredienteDisponible.getCantidadAsScalar()
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
