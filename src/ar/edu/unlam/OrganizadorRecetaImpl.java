@@ -1,5 +1,6 @@
 package ar.edu.unlam;
 
+import ar.edu.unlam.Model.Ingrediente;
 import ar.edu.unlam.Model.Receta;
 import ar.edu.unlam.Services.ServicioRecetas;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
 
 public class OrganizadorRecetaImpl implements OrganizadorReceta {
     ArrayList<Receta> recetas;
-    HashMap<String, String> ingredientes;
+    ArrayList<Ingrediente> ingredientes;
 
     public OrganizadorRecetaImpl(String recetasPath, String ingredientesPath) {
         this.recetas = ServicioRecetas.getRecetasFromFolder(recetasPath);
@@ -20,7 +21,7 @@ public class OrganizadorRecetaImpl implements OrganizadorReceta {
         return recetas;
     }
 
-    private boolean hayIngredientesSuficientes(HashMap<String, String> recetaIngredientes, HashMap<String, String> ingredientesDisponible) {
+    private boolean hayIngredientesSuficientes(ArrayList<Ingrediente> recetaIngredientes, ArrayList<Ingrediente> ingredientesDisponible) {
         return true;
     }
 }

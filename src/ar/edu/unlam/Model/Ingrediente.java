@@ -1,10 +1,25 @@
 package ar.edu.unlam.Model;
 
+import ar.edu.unlam.Util.UnitsUtil;
+
 public class Ingrediente {
     String nombre;
-    int cantidad;
+    String cantidad;
 
-    public Ingrediente() {
+    public Ingrediente(String nombre, String cantidad) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+    }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getCantidad() {
+        return cantidad;
+    }
+
+    public float getCantidadAsScalar() {
+        return UnitsUtil.convertRecipesUnitToFloat(this.cantidad);
     }
 }

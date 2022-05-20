@@ -1,5 +1,6 @@
 package ar.edu.unlam.Services;
 
+import ar.edu.unlam.Model.Ingrediente;
 import ar.edu.unlam.Model.Receta;
 import ar.edu.unlam.Util.FileUtil;
 
@@ -21,7 +22,8 @@ public class ServicioRecetas {
             for (int i = 1; i < recetaItem.size(); i++) {
                 String[] splitLine = recetaItem.get(i).split(" ");
                 String ingredienteNombre = String.join(" ", Arrays.copyOfRange(splitLine, 1, splitLine.length));
-                receta.addIngrediente(ingredienteNombre, splitLine[0]);
+                Ingrediente ingrediente = new Ingrediente(ingredienteNombre, splitLine[0]);
+                receta.addIngrediente(ingrediente);
             }
             recetas.add(receta);
         }
@@ -30,14 +32,15 @@ public class ServicioRecetas {
     }
 
 
-    public static HashMap<String, String> getIngredientesFromFile(String filepath) {
+    public static ArrayList<Ingrediente> getIngredientesFromFile(String filepath) {
         List<String> lines = FileUtil.readFileInList(filepath);
-        HashMap<String, String> ingredientes = new HashMap<String, String>();
+        ArrayList<Ingrediente> ingredientes = new ArrayList<>();
 
         for (String line : lines) {
             String[] splitLine = line.split(" ");
             String ingredienteNombre = String.join(" ", Arrays.copyOfRange(splitLine, 1, splitLine.length));
-            ingredientes.put(ingredienteNombre, splitLine[0]);
+            Ingrediente ingrediente = new Ingrediente(ingredienteNombre, splitLine[0]);
+            ingredientes.add(ingrediente);
         }
 
         return ingredientes;
