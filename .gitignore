@@ -25,3 +25,6 @@ hs_err_pid*
 # Mac Os
 .DS_Store
 .idea/azure
+/Organizador-recetas/target/
+/out/
+/target/
