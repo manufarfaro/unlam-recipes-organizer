@@ -2,18 +2,21 @@ package ar.edu.unlam;
 
 import ar.edu.unlam.Model.Ingrediente;
 import ar.edu.unlam.Model.Receta;
-import ar.edu.unlam.Services.ServicioRecetas;
+import ar.edu.unlam.Services.*;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class OrganizadorRecetaImpl implements OrganizadorReceta {
+    ServicioRecetasFactory servicioRecetasFactory;
     ArrayList<Receta> recetas;
     ArrayList<Ingrediente> ingredientesDisponibles;
 
-    public OrganizadorRecetaImpl(String recetasPath, String ingredientesPath) {
-        this.recetas = ServicioRecetas.getRecetasFromFolder(recetasPath);
-        this.ingredientesDisponibles = ServicioRecetas.getIngredientesFromFile(ingredientesPath);
+    public OrganizadorRecetaImpl(ServiciosRecetasType serviciosRecetasType, String recetasPath, String ingredientesPath) throws InvalidServiciosRecetasException {
+        this.servicioRecetasFactory = new ServicioRecetasFactoryImpl();
+        ServicioRecetas servicioRecetas = this.servicioRecetasFactory.createServiciosRecetas(serviciosRecetasType, recetasPath, ingredientesPath);
+        this.recetas = servicioRecetas.getRecetas();
+        this.ingredientesDisponibles = servicioRecetas.getIngredientes();
     }
 
     @Override
@@ -25,16 +28,20 @@ public class OrganizadorRecetaImpl implements OrganizadorReceta {
     }
 
     private boolean hayIngredientesSuficientes(ArrayList<Ingrediente> recetaIngredientes, ArrayList<Ingrediente> ingredientesDisponibles) {
+        if (recetaIngredientes.size() < 1) {
+            return true;
+        }
+        int matchedQtyIngredientes = 0;
         for (Ingrediente recetaIngrediente : recetaIngredientes) {
             for (Ingrediente ingredienteDisponible : ingredientesDisponibles) {
                 if (
                     recetaIngrediente.getNombre().equals(ingredienteDisponible.getNombre()) &&
                     recetaIngrediente.getCantidadAsScalar() <= ingredienteDisponible.getCantidadAsScalar()
                 ) {
-                    return true;
+                    matchedQtyIngredientes++;
                 }
             }
         }
-        return false;
+        return matchedQtyIngredientes == recetaIngredientes.size();
     }
 }
